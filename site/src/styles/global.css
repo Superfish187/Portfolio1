@@ -1,0 +1,107 @@
+@import "tailwindcss";
+@import "@fontsource/michroma/400.css";
+@import "@fontsource-variable/inter-tight";
+
+/* Swap in "NSX" / "PP Neue Montreal" here once their web licences are confirmed (files go in public/fonts). */
+@theme {
+  --font-display: "Michroma", ui-sans-serif, sans-serif;
+  --font-sans: "Inter Tight Variable", ui-sans-serif, system-ui, sans-serif;
+
+  --color-ink: oklch(0.24 0 0);
+  --color-paper: oklch(0.96 0 0);
+  --color-mute: oklch(0.72 0 0);
+  --color-copper: oklch(0.66 0.13 55);
+  --color-glow-red: oklch(0.62 0.22 25);
+  --color-glow-blue: oklch(0.65 0.15 245);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+:root {
+  /* horizontal run of a ~60° diagonal edge */
+  --slant: clamp(3rem, 12vw, 11rem);
+  color-scheme: dark;
+}
+
+html {
+  background: #000;
+}
+
+body {
+  @apply font-sans text-paper antialiased;
+  background: #000;
+  min-height: 100dvh;
+}
+
+.display {
+  @apply font-display uppercase;
+  letter-spacing: 0.45em;
+  line-height: 1.5;
+}
+
+/* Diagonal parallelogram slice, the portfolio's signature frame */
+.slice {
+  clip-path: polygon(var(--slant) 0, 100% 0, calc(100% - var(--slant)) 100%, 0 100%);
+}
+a,
+button {
+  transition: opacity 0.3s var(--ease-out);
+}
+a:hover {
+  opacity: 0.6;
+}
+
+:focus-visible {
+  outline: 1px solid var(--color-paper);
+  outline-offset: 4px;
+}
+
+/* Elements GSAP reveals start transparent only when motion is allowed and JS is running (class set inline in <head>).
+   opacity, not visibility: hidden content would drop out of the accessibility tree until scrolled to. */
+.motion [data-reveal],
+.motion [data-split],
+.motion [data-wipe] {
+  opacity: 0;
+}
+
+/* Lenis recommended CSS */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* plusmurs typography: intro block over ~half the width; captions as value + much smaller label pairs */
+.intro {
+  @apply max-w-[46rem] text-[13px] leading-snug font-semibold text-mute md:w-[46%];
+}
+.caption {
+  @apply text-[12px] leading-relaxed font-semibold;
+}
+.label {
+  font-size: 8px;
+  color: var(--color-mute);
+  margin: 0 1.6em 0 0.4em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+@media (pointer: fine) {
+  [data-cursor] {
+    cursor: none;
+  }
+}

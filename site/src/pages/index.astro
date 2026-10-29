@@ -1,0 +1,61 @@
+---
+import { existsSync } from "node:fs";
+import { getImage } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import posterMatteSrc from "../assets/hero/poster-matte.jpg";
+import posterMirrorSrc from "../assets/hero/poster-mirror.jpg";
+import { contact } from "../lib/site";
+
+// Two hero finishes rendered from blender/hero.py: matte (default) and mirror (?hero=mirror).
+// Files: public/video/hero-<finish>.mp4 (+ .webm) and src/assets/hero/poster-<finish>.jpg
+// Until the rendered loops are added, only the posters show (no <source>, so no broken requests)
+const hasMp4 = existsSync("public/video/hero-matte.mp4") && existsSync("public/video/hero-mirror.mp4");
+const hasWebm = existsSync("public/video/hero-matte.webm") && existsSync("public/video/hero-mirror.webm");
+const posterMatte = await getImage({ src: posterMatteSrc, width: 1920, format: "webp" });
+const posterMirror = await getImage({ src: posterMirrorSrc, width: 1920, format: "webp" });
+---
+
+<Base bare title="Portfolio">
+  <section class="relative h-dvh overflow-hidden">
+    <video id="hero" class="absolute inset-0 h-full w-full object-cover" autoplay muted loop playsinline preload="auto" poster={posterMatte.src} aria-hidden="true">
+      {hasWebm && <source src="/video/hero-matte.webm" type="video/webm" />}
+      {hasMp4 && <source src="/video/hero-matte.mp4" type="video/mp4" />}
+    </video>
+    <script is:inline define:vars={{ mirrorPoster: posterMirror.src }}>
+      // Review switch: ?hero=mirror shows the mirror-chrome loop instead of matte
+      if (new URLSearchParams(location.search).get("hero") === "mirror") {
+        const v = document.getElementById("hero");
+        v.poster = mirrorPoster;
+        v.querySelectorAll("source").forEach((s) => (s.src = s.src.replace("hero-matte", "hero-mirror")));
+        v.load();
+      }
+    </script>
+    <!-- Contrast scrim: the chrome can go near-white, so darken behind the centred caption -->
+    <!-- Sizes have px floors so phones (where the caption wraps) stay covered; verified ≥4.5:1 over every frame -->
+    <div class="scrim absolute inset-0"><div></div></div>
+    <div class="relative flex h-full items-center justify-center px-5 text-center">
+      <h1 class="sr-only">Julius Nossoll Testorf, Transportation Interior Design Portfolio</h1>
+      <p class="text-[15px] font-medium text-paper [text-shadow:0_1px_12px_rgb(0_0_0/0.6)]" data-reveal>
+        <a href="/work">Work</a>, <a href="/about">About</a>, <a href={`mailto:${contact.email}`}>Contact</a>
+        <span class="whitespace-nowrap">© {new Date().getFullYear()} Julius Nossoll Testorf</span>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* Composite: 20% tint everywhere + a centred ellipse (box sized with px floors, since gradient sizes can't use max()).
+     Resulting alpha: 0.92 centre, 0.56 at 70%, 0.2 outside. Mirrored in blender/check_contrast.py. */
+  .scrim {
+    background: rgb(20 21 24 / 0.2);
+  }
+  .scrim > div {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max(84%, 520px);
+    height: max(60%, 340px);
+    translate: -50% -50%;
+    background: radial-gradient(closest-side, rgb(20 21 24 / 0.9), rgb(20 21 24 / 0.45) 70%, transparent);
+  }
+</style>

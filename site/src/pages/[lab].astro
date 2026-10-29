@@ -1,0 +1,68 @@
+---
+// Dev-only evaluation page: /lab exists under `npm run dev` and is never emitted by `npm run build`.
+import Base from "../layouts/Base.astro";
+import { Decrypted, Effect } from "../components/lab/Lab";
+import { toImg } from "../lib/img";
+import heroShot from "../assets/projects/skywalker/hero-shot-1.jpg";
+
+export function getStaticPaths() {
+  return import.meta.env.DEV ? [{ params: { lab: "lab" } }] : [];
+}
+
+const after = await toImg({ src: heroShot, alt: "" });
+const text = "Skywalker";
+---
+
+<Base title="Lab">
+  <div class="space-y-24 px-5 pt-28 pb-12 md:px-8">
+    <header class="max-w-2xl space-y-3">
+      <h1 class="display text-base">Lab</h1>
+      <p class="text-sm text-mute">
+        Candidate effects side by side. Scroll each into view, watch the FPS counter, try keyboard and touch, then pick one per slot. Reload to replay.
+      </p>
+    </header>
+
+    <section class="space-y-10">
+      <h2 class="display text-xs text-mute">1 · Heading reveal</h2>
+      <div class="grid gap-12 md:grid-cols-2">
+        <div><p class="mb-3 text-xs text-mute">A · GSAP SplitText, masked chars (shipped default, 0 extra KB)</p><h3 class="display text-2xl" data-split>{text}</h3></div>
+        <div><p class="mb-3 text-xs text-mute">B · GSAP ScrambleText (0 extra KB)</p><h3 class="display text-2xl" data-split="scramble">{text}</h3></div>
+        <div><p class="mb-3 text-xs text-mute">C · React Bits DecryptedText (React island + Motion)</p><Decrypted client:visible text={text} /></div>
+        <div><p class="mb-3 text-xs text-mute">D · motion-primitives TextEffect, fade-in-blur (React island + Motion)</p><Effect client:visible text={text} /></div>
+      </div>
+    </section>
+
+    <section class="space-y-6">
+      <h2 class="display text-xs text-mute">2 · Diagonal wipe + parallax</h2>
+      <div class="slice aspect-[2/1] overflow-hidden" data-wipe>
+        <img src={after.src} srcset={after.srcSet} sizes="100vw" alt="" class="h-[115%] w-full object-cover" data-parallax="6" />
+      </div>
+    </section>
+
+    <section class="space-y-6">
+      <h2 class="display text-xs text-mute">3 · Cursor</h2>
+      <p class="text-sm text-mute">The site-wide follower is live. Hover the zones:</p>
+      <div class="grid grid-cols-2 gap-4 text-center text-xs">
+        <div class="border border-paper/20 py-16" data-cursor="Prev">data-cursor="Prev"</div>
+        <div class="border border-paper/20 py-16" data-cursor="Next">data-cursor="Next"</div>
+      </div>
+    </section>
+  </div>
+
+  <output id="fps" class="fixed right-3 bottom-3 z-50 bg-black/70 px-2 py-1 font-mono text-xs" aria-live="off">– fps</output>
+  <script>
+    const out = document.getElementById("fps")!;
+    let frames = 0, last = performance.now(), worst = 0, prev = last;
+    const tick = (t: number) => {
+      frames++;
+      worst = Math.max(worst, t - prev);
+      prev = t;
+      if (t - last >= 1000) {
+        out.textContent = `${frames} fps · worst ${worst.toFixed(0)} ms`;
+        frames = 0; worst = 0; last = t;
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  </script>
+</Base>

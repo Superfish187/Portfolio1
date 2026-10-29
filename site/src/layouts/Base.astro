@@ -1,0 +1,79 @@
+---
+import { ClientRouter } from "astro:transitions";
+import Cursor from "../components/Cursor";
+import { contact } from "../lib/site";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Hide header and footer, e.g. on the fullscreen home */
+  bare?: boolean;
+}
+const { title, description = "Julius Nossoll Testorf, transportation interior design portfolio.", bare = false } = Astro.props;
+const fullTitle = title ? `${title} — Julius Nossoll Testorf` : "Julius Nossoll Testorf — Transportation Interior Design";
+const path = Astro.url.pathname;
+const nav = [
+  { href: "/work", label: "Work" },
+  { href: "/about", label: "About" },
+];
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta name="theme-color" content="#000000" />
+    <script is:inline>
+      // Lets CSS pre-hide GSAP reveal targets; never set when motion is reduced or JS is off
+      const m = () => matchMedia("(prefers-reduced-motion: no-preference)").matches && document.documentElement.classList.add("motion");
+      m();
+      document.addEventListener("astro:after-swap", m);
+    </script>
+    <ClientRouter />
+  </head>
+  <body>
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50">Skip to content</a>
+    {!bare && (
+    <header class="fixed inset-x-0 top-0 z-40 flex items-baseline justify-between px-5 py-4 text-xs md:px-8 mix-blend-difference">
+      <a href="/" class="display text-[0.65rem]">J. Nossoll Testorf</a>
+      <nav aria-label="Main">
+        <ul class="flex gap-5">
+          {nav.map((n) => (
+            <li>
+              <a href={n.href} aria-current={path.startsWith(n.href) ? "page" : undefined} class="aria-[current=page]:underline underline-offset-4">
+                {n.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </header>
+    )}
+
+    <main id="main">
+      <slot />
+    </main>
+
+    {!bare && (
+      <footer class="flex flex-wrap items-baseline justify-between gap-4 px-5 py-10 text-xs text-mute md:px-8">
+        <span class="display text-[0.6rem]">Transportation Interior Design</span>
+        <span class="flex gap-5">
+          <a href={`mailto:${contact.email}`}>{contact.email}</a>
+          <a href={contact.linkedin} rel="me noopener" target="_blank">LinkedIn</a>
+        </span>
+        <span>© {new Date().getFullYear()}</span>
+      </footer>
+    )}
+
+    <Cursor client:only="react" transition:persist />
+    <script>
+      import "../lib/motion";
+    </script>
+  </body>
+</html>

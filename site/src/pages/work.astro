@@ -1,0 +1,64 @@
+---
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import { contact } from "../lib/site";
+
+const projects = (await getCollection("projects")).sort((a, b) => a.data.number.localeCompare(b.data.number));
+---
+
+<Base title="Work" description="Selected transportation interior design projects by Julius Nossoll Testorf.">
+  <h1 class="sr-only">Work</h1>
+  <div class="px-[15px] pt-16 pb-12 md:px-[1vw] md:pt-20">
+    <!-- plusmurs layout: intro block over ~half the width, then one row of three tiles per project -->
+    <p class="intro" data-reveal>
+      <a href="/about" class="text-paper">Julius Nossoll Testorf</a> is a transportation interior design student
+      creating innovative and meaningful mobility concepts, combining strong aesthetics with user experience,
+      storytelling and feasible solutions. Tools: Blender, Photoshop, Illustrator, Alias, Vizcom, Premiere Pro.
+      Contact: <a href={`mailto:${contact.email}`} class="text-paper">{contact.email}</a>
+      <a href={contact.linkedin} rel="me noopener" target="_blank" class="text-paper">LinkedIn</a>
+      <br /><a href="/about" class="text-paper">About</a>
+    </p>
+
+    <div class="mt-12 space-y-16 md:mt-16 md:space-y-[4.5rem]">
+      {
+        projects.map((p) => {
+          const d = p.data;
+          const href = `/work/${p.id}`;
+          return (
+            <article class="grid items-start gap-[15px] md:grid-cols-3 md:gap-[1vw]" aria-labelledby={`t-${p.id}`}>
+              {d.tiles.map((im, i) => (
+                <div data-reveal>
+                  <a href={href} data-cursor="View" tabindex={i ? -1 : undefined} aria-hidden={i ? "true" : undefined} class="block">
+                    <Image
+                      src={im.src}
+                      alt={i ? "" : im.alt}
+                      widths={[480, 800, 1200]}
+                      sizes="(min-width: 768px) 32vw, 100vw"
+                      class="w-full"
+                      transition:name={i === 0 ? `cover-${p.id}` : undefined}
+                    />
+                  </a>
+                  {i === 0 && (
+                    <p class="caption mt-2">
+                      <a href={href} id={`t-${p.id}`}>
+                        {d.brand} {d.title}
+                      </a>
+                      <span class="label">Project</span>
+                      {d.partner && (<>{d.partner}<span class="label">Partner</span></>)}
+                      {d.scope}
+                      <span class="label">Scope</span>
+                      {d.semester.replace(" Project", "")}
+                      <span class="label">Semester</span>
+                    </p>
+                  )}
+                </div>
+              ))}
+            </article>
+          );
+        })
+      }
+    </div>
+  </div>
+</Base>
+

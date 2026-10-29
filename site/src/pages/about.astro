@@ -1,0 +1,49 @@
+---
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import portrait from "../assets/about/portrait.jpg";
+import { contact } from "../lib/site";
+
+const hard = "Photoshop 8, Illustrator 6, Alias 6, Blender 9, Vizcom 7, Premiere Pro 7";
+const soft = "Sociability, Adaptability, Attention to Detail, Problem Solving, Creative Thinking, Optimism, Patience";
+const languages = "German Native, English C1, French B2, Spanish A2";
+const tiles = [
+  { src: portrait, alt: "Portrait of Julius Nossoll Testorf" },
+];
+---
+
+<Base title="About" description="About Julius Nossoll Testorf, transportation interior design student.">
+  <h1 class="sr-only">About</h1>
+  <div class="px-[15px] pt-16 pb-12 md:px-[1vw] md:pt-20">
+    <!-- Same structure as the Work page: intro block, then a tile row with the caption under the first tile -->
+    <p class="intro" data-reveal>
+      <span class="text-paper">I'm Julius Nossoll Testorf,</span> a transportation interior design student passionate about
+      creating innovative and meaningful mobility concepts. I enjoy exploring new design approaches, combining strong
+      aesthetics with user experience, storytelling and feasible solutions.
+      Contact: <a href={`mailto:${contact.email}`} class="text-paper">{contact.email}</a>
+      <a href={contact.linkedin} rel="me noopener" target="_blank" class="text-paper">LinkedIn</a>
+      <br /><a href="/work" class="text-paper">Work</a>
+    </p>
+
+    <article class="mt-12 grid items-start gap-[15px] md:mt-16 md:grid-cols-3 md:gap-[1vw]">
+      {
+        tiles.map((t, i) => (
+          <div data-reveal>
+            <Image src={t.src} alt={t.alt} widths={[480, 800, 1200]} sizes="(min-width: 768px) 32vw, 100vw" class="w-full" loading={i ? "lazy" : "eager"} />
+            {i === 0 && (
+              <p class="caption mt-2">
+                Julius Nossoll Testorf<span class="label">Name</span>
+                Transportation Interior Design<span class="label">Field</span>
+                {hard}<span class="label">Hard skills /10</span>
+                {soft}<span class="label">Soft skills</span>
+                {languages}<span class="label">Languages</span>
+                <a href={`mailto:${contact.email}`}>{contact.email}</a><span class="label">Email</span>
+                <a href={contact.linkedin} rel="me noopener" target="_blank">LinkedIn</a><span class="label">Profile</span>
+              </p>
+            )}
+          </div>
+        ))
+      }
+    </article>
+  </div>
+</Base>

@@ -1,0 +1,14 @@
+# The website lives in site/; Netlify builds it from there
+[build]
+  base = "site"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "24"
+
+# Astro fingerprints these, so they can be cached forever
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

@@ -1,0 +1,168 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import { Image, getImage } from "astro:assets";
+import Base from "../../layouts/Base.astro";
+import WeatherToggle from "../../components/WeatherToggle";
+import { toImg } from "../../lib/img";
+
+export async function getStaticPaths() {
+  const all = (await getCollection("projects")).sort((a, b) => a.data.number.localeCompare(b.data.number));
+  return all.map((p, i) => ({ params: { slug: p.id }, props: { p, next: all[(i + 1) % all.length] } }));
+}
+
+const { p, next } = Astro.props as { p: CollectionEntry<"projects">; next: CollectionEntry<"projects"> };
+const d = p.data;
+const widths = [640, 1024, 1600, 2400];
+
+// React islands get pre-optimised image props
+const islands = await Promise.all(d.sections.map((s) => (s.layout === "weather" ? Promise.all(s.images.map(toImg)) : null)));
+const posters = await Promise.all(
+  d.sections.map((s) => (s.video ? getImage({ src: s.video.poster, width: 1920, format: "webp" }).then((r) => r.src) : null)),
+);
+---
+
+<Base title={`${d.brand} ${d.title}`} description={d.summary}>
+  <section class="relative overflow-hidden pt-16 md:min-h-dvh md:pt-20">
+    <div class="slice relative h-[55vh] w-full overflow-hidden md:absolute md:inset-y-0 md:right-0 md:h-auto md:w-[70%]" transition:name={`cover-${p.id}`}>
+      <Image
+        src={d.cover.src}
+        alt={d.cover.alt}
+        widths={widths}
+        sizes="(min-width: 768px) 70vw, 100vw"
+        loading="eager"
+        fetchpriority="high"
+        class="h-[115%] w-full object-cover"
+        data-parallax="6"
+      />
+    </div>
+    <div class="relative flex flex-col justify-end gap-6 px-5 pt-8 pb-12 md:min-h-[calc(100dvh-5rem)] md:max-w-[40%] md:px-8">
+      <p class="font-display text-[clamp(4rem,14vw,11rem)] leading-none text-paper/90">{d.number}</p>
+      <h1 class="display text-base md:text-xl" data-split>
+        {d.brand}
+        <br />
+        {d.title}
+      </h1>
+      <p class="text-xs text-mute">{d.semester}</p>
+      <p class="max-w-md text-sm leading-relaxed text-paper/85" data-reveal>{d.summary}</p>
+    </div>
+  </section>
+
+  {
+    d.sections.map((s, i) => (
+      <section class="py-16 md:py-28" data-pin-strip={s.layout === "strip" ? "" : undefined}>
+        <header class="mb-8 grid gap-3 px-5 md:mb-12 md:grid-cols-12 md:px-8">
+          <h2 class="display text-sm md:col-span-5" data-split>{s.heading}</h2>
+          {s.body && <p class="max-w-md text-sm text-mute md:col-span-5 md:col-start-7" data-reveal>{s.body}</p>}
+        </header>
+
+        {s.layout === "full" && (
+          <div class="space-y-[1vw] px-5 md:px-8">
+            {s.images.map((im) => (
+              <div data-wipe>
+                <Image src={im.src} alt={im.alt} widths={widths} sizes="100vw" class="mx-auto max-h-[90vh] w-auto max-w-full" />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {s.layout === "grid" && (
+          <div class="grid items-start gap-[15px] px-5 md:grid-cols-3 md:gap-[1vw] md:px-8">
+            {s.images.map((im, k) => {
+              // one image left over in a 3-up grid: let the first one span the row instead
+              const wide = k === 0 && s.images.length % 3 === 1;
+              return (
+                <div data-reveal class:list={[wide && "md:col-span-3"]}>
+                  <Image src={im.src} alt={im.alt} widths={widths} sizes={wide ? "100vw" : "(min-width: 768px) 32vw, 100vw"} class="w-full" />
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {s.layout === "strip" && (
+          <div data-track class="flex snap-x snap-mandatory gap-6 overflow-x-auto px-5 md:gap-10 md:px-8">
+            {s.images.map((im) => (
+              <figure class="shrink-0 snap-start">
+                <Image src={im.src} alt={im.alt} widths={widths} sizes="(min-width: 768px) 75vw, 85vw" class="h-[45vw] max-h-[75vh] w-auto md:h-[70vh]" />
+                {im.label && <figcaption class="mt-2 text-xs text-mute">{im.label}</figcaption>}
+              </figure>
+            ))}
+          </div>
+        )}
+
+        {s.layout === "carousel" && (
+          <div class="px-5 md:px-8" data-carousel data-reveal>
+            <div class="relative">
+              <div data-slides class="flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none]" tabindex="0" role="region" aria-roledescription="carousel" aria-label={s.heading}>
+                {s.images.map((im, k) => (
+                  <figure class="aspect-[3/2] max-h-[80vh] w-full shrink-0 snap-center" aria-label={`${k + 1} of ${s.images.length}`}>
+                    <Image src={im.src} alt={im.alt} widths={widths} sizes="100vw" class="h-full w-full object-contain" />
+                  </figure>
+                ))}
+              </div>
+              {/* plusmurs-style click halves; touch devices swipe the scroller instead */}
+              <button type="button" data-prev aria-label="Previous image" data-cursor="Prev" class="absolute inset-y-0 left-0 hidden w-1/2 pointer-fine:block" />
+              <button type="button" data-next aria-label="Next image" data-cursor="Next" class="absolute inset-y-0 right-0 hidden w-1/2 pointer-fine:block" />
+            </div>
+            <p class="caption mt-2 tabular-nums" aria-live="polite"><span data-index>1</span> / {s.images.length}</p>
+          </div>
+        )}
+
+        {s.layout === "weather" && islands[i] && (
+          <div class="px-5 md:px-8" data-reveal>
+            <WeatherToggle client:visible images={islands[i]} />
+          </div>
+        )}
+
+        {s.video && (
+          <div class="px-5 md:px-8" data-reveal>
+            <video src={s.video.src} poster={posters[i] ?? undefined} controls playsinline preload="none" class="w-full" />
+          </div>
+        )}
+      </section>
+    ))
+  }
+
+  <nav aria-label="Next project" class="px-5 py-24 text-center md:px-8">
+    <p class="text-xs text-mute">Next project</p>
+    <a href={`/work/${next.id}`} class="display mt-4 inline-block text-lg md:text-2xl">
+      {next.data.brand} {next.data.title}
+    </a>
+  </nav>
+</Base>
+
+<script>
+  // Carousel: loops like the reference; native scroll-snap handles swipe and arrow keys
+  document.addEventListener("astro:page-load", () => {
+    document.querySelectorAll<HTMLElement>("[data-carousel]").forEach((c) => {
+      const slides = c.querySelector<HTMLElement>("[data-slides]")!;
+      const index = c.querySelector<HTMLElement>("[data-index]")!;
+      const n = slides.children.length;
+      const at = () => Math.round(slides.scrollLeft / slides.clientWidth);
+      // Track the slide we're heading to, so quick repeated clicks don't read a mid-animation position
+      let target = -1;
+      let settle = 0;
+      const go = (step: number) => {
+        target = ((target >= 0 ? target : at()) + step + n) % n;
+        index.textContent = String(target + 1);
+        slides.scrollTo({
+          left: target * slides.clientWidth,
+          behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+        });
+        clearTimeout(settle);
+        settle = window.setTimeout(() => (target = -1), 1000); // resync if the animation gets interrupted
+      };
+      c.querySelector("[data-prev]")!.addEventListener("click", () => go(-1));
+      c.querySelector("[data-next]")!.addEventListener("click", () => go(1));
+      slides.addEventListener(
+        "scroll",
+        () => {
+          if (target >= 0 && at() !== target) return;
+          target = -1;
+          index.textContent = String(at() + 1);
+        },
+        { passive: true },
+      );
+    });
+  });
+</script>

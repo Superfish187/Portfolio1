@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# local tool config
+.claude/
+
+# Blender autosave backups
+*.blend1
+
+# GitHub rejects files over 100 MB. The site uses the compressed copy in site/public/video/vyra-walkthrough.mp4
+Portfolio Asset pics/MAN Vyra/Video1.mp4
