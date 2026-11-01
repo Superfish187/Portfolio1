@@ -6,7 +6,7 @@ Transportation interior design portfolio website, plus the source material behin
 |---|---|
 | `site/` | The website (Astro + React islands, Tailwind, GSAP, Lenis). |
 | `blender/` | Liquid-chrome hero loop scenes (matte + mirror) and render/encode instructions; see `blender/README.md`. |
-| `Portfolio Asset pics/` | Original project images, named by where they appear on the site. |
+| `Bilder/` | Original project images, named by where they appear on the site. |
 | `Julius_Portfolio_Shotbook.xlsx` | Image placement plan. |
 | `Portfolio Julius Nossoll Testorf.pdf` | The original paper portfolio. |
 
@@ -34,4 +34,4 @@ Netlify builds automatically from this repository: `netlify.toml` points it at `
 
 ## Not in the repository
 
-`Portfolio Asset pics/MAN Vyra/Video1.mp4` (269 MB) is over GitHub's 100 MB file limit. The site uses the compressed copy at `site/public/video/vyra-walkthrough.mp4`.
+`Bilder/MAN Vyra/Video1.mp4` (269 MB) and `Bilder/Geely Skywalker/Skywalker 2.0.mp4` (293 MB) are over GitHub's 100 MB file limit. The site uses the compressed copies in `site/public/video/`.

@@ -14,19 +14,30 @@ tiles:
   - { src: "../../assets/projects/monarch/hero-shot-2.jpg", alt: "Maybach Monarch steering unit, front view" }
   - { src: "../../assets/projects/monarch/hero-shot-3.jpg", alt: "Maybach Monarch steering unit on a plinth" }
 sections:
-  - heading: Form Development
+  - heading: Form Development Stage 1
     body: Two form inspirations combined into one sculptural steering unit.
     layout: grid
     images:
-      - { src: "../../assets/projects/monarch/keysketch.jpg", alt: "Key sketch of the steering unit" }
       - { src: "../../assets/projects/monarch/sketch-1.jpg", alt: "Early form sketches" }
       - { src: "../../assets/projects/monarch/sketch-2.jpg", alt: "Form sketches with proportions" }
       - { src: "../../assets/projects/monarch/sketch-3.jpg", alt: "Coloured concept sketch of the hub" }
       - { src: "../../assets/projects/monarch/sketch-4.jpg", alt: "Coloured sketch of the wheel frame" }
       - { src: "../../assets/projects/monarch/sketch-5.jpg", alt: "Steering unit perspective sketch" }
+  - heading: Form Development Stage 2
+    layout: grid
+    images:
+      - { src: "../../assets/projects/monarch/render-1.jpg", alt: "Form study render, side view" }
+      - { src: "../../assets/projects/monarch/render-2.jpg", alt: "Form study render, three-quarter view" }
+      - { src: "../../assets/projects/monarch/render-3.jpg", alt: "Form study render, front view" }
+  - heading: Form Development Stage 3
+    layout: grid
+    images:
       - { src: "../../assets/projects/monarch/sketch-6.jpg", alt: "Steering unit sketch, alternative frame" }
       - { src: "../../assets/projects/monarch/sketch-7.jpg", alt: "LED stripe placement sketch" }
       - { src: "../../assets/projects/monarch/sketch-8.jpg", alt: "Sketch of the LED ring on the hub" }
+  - heading: Key Sketch
+    images:
+      - { src: "../../assets/projects/monarch/keysketch.jpg", alt: "Key sketch of the steering unit" }
   - heading: Function
     body: Haptic and visual warnings tell the driver about their environment through the steering unit.
     layout: weather
@@ -37,7 +48,7 @@ sections:
   - heading: Final Product
     layout: grid
     images:
-      - { src: "../../assets/projects/monarch/render-1.jpg", alt: "Final render, side view" }
-      - { src: "../../assets/projects/monarch/render-2.jpg", alt: "Final render, three-quarter view" }
-      - { src: "../../assets/projects/monarch/render-3.jpg", alt: "Final render, front view" }
+      - { src: "../../assets/projects/monarch/hero-shot-1.jpg", alt: "Final render: steering unit, three-quarter view" }
+      - { src: "../../assets/projects/monarch/hero-shot-2.jpg", alt: "Final render: steering unit, front view" }
+      - { src: "../../assets/projects/monarch/hero-shot-3.jpg", alt: "Final render: steering unit on a plinth" }
 ---

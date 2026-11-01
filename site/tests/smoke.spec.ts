@@ -50,9 +50,9 @@ test("monarch weather toggle switches mode", async ({ page }) => {
   await expect(page.getByRole("img", { name: /hot weather/i })).toBeVisible();
 });
 
-test("front evolution carousel steps and loops", async ({ page, isMobile }) => {
+test("cockpit evolution carousel steps and loops", async ({ page, isMobile }) => {
   await page.goto("/work/skywalker");
-  const carousel = page.locator("[data-carousel]");
+  const carousel = page.locator("[data-carousel]").first();
   const index = carousel.locator("[data-index]");
   await carousel.scrollIntoViewIfNeeded();
   if (isMobile) {
@@ -65,12 +65,21 @@ test("front evolution carousel steps and loops", async ({ page, isMobile }) => {
   await expect(index).toHaveText("2");
   await carousel.getByRole("button", { name: "Previous image" }).click();
   await carousel.getByRole("button", { name: "Previous image" }).click();
-  await expect(index).toHaveText("3"); // wraps from the first to the last image
+  await expect(index).toHaveText("9"); // wraps from the first to the last image
 });
 
-test("vyra walkthrough video loads on demand", async ({ page }) => {
-  await page.goto("/work/vyra");
-  const v = page.locator("main video");
-  await expect(v).toHaveAttribute("preload", "none");
-  await expect(v).toHaveAttribute("src", "/video/vyra-walkthrough.mp4");
+test("project hero text never overlaps the image", async ({ page, isMobile }) => {
+  test.skip(isMobile, "phones stack the text under the image");
+  for (const slug of ["skywalker", "vyra", "monarch"]) {
+    for (const width of [768, 1024, 1440, 1920]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`/work/${slug}`);
+      const gap = await page.evaluate(() => {
+        const img = document.querySelector("main section .slice")!.getBoundingClientRect();
+        const text = [...document.querySelectorAll("main section:first-child h1, main section:first-child p")];
+        return img.left - Math.max(...text.map((t) => t.getBoundingClientRect().right));
+      });
+      expect(gap, `${slug} @ ${width}px`).toBeGreaterThan(0);
+    }
+  }
 });

@@ -22,9 +22,14 @@ const posterMirror = await getImage({ src: posterMirrorSrc, width: 1920, format:
       {hasMp4 && <source src="/video/hero-matte.mp4" type="video/mp4" />}
     </video>
     <script is:inline define:vars={{ mirrorPoster: posterMirror.src }}>
+      const v = document.getElementById("hero");
+      // Reduced motion: keep the poster still instead of the looping video
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        v.removeAttribute("autoplay");
+        v.pause();
+      }
       // Review switch: ?hero=mirror shows the mirror-chrome loop instead of matte
       if (new URLSearchParams(location.search).get("hero") === "mirror") {
-        const v = document.getElementById("hero");
         v.poster = mirrorPoster;
         v.querySelectorAll("source").forEach((s) => (s.src = s.src.replace("hero-matte", "hero-mirror")));
         v.load();

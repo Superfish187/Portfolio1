@@ -23,20 +23,21 @@ const posters = await Promise.all(
 
 <Base title={`${d.brand} ${d.title}`} description={d.summary}>
   <section class="relative overflow-hidden pt-16 md:min-h-dvh md:pt-20">
-    <div class="slice relative h-[55vh] w-full overflow-hidden md:absolute md:inset-y-0 md:right-0 md:h-auto md:w-[70%]" transition:name={`cover-${p.id}`}>
+    <div class="slice relative h-[55vh] w-full overflow-hidden md:absolute md:inset-y-0 md:right-0 md:h-auto md:w-[64%]" transition:name={`cover-${p.id}`}>
       <Image
         src={d.cover.src}
         alt={d.cover.alt}
         widths={widths}
-        sizes="(min-width: 768px) 70vw, 100vw"
+        sizes="(min-width: 768px) 64vw, 100vw"
         loading="eager"
         fetchpriority="high"
         class="h-[115%] w-full object-cover"
         data-parallax="6"
       />
     </div>
-    <div class="relative flex flex-col justify-end gap-6 px-5 pt-8 pb-12 md:min-h-[calc(100dvh-5rem)] md:max-w-[40%] md:px-8">
-      <p class="font-display text-[clamp(4rem,14vw,11rem)] leading-none text-paper/90">{d.number}</p>
+    <!-- Text column stops 1.5rem short of the image, whose slanted left edge reaches 36% at the bottom -->
+    <div class="relative flex flex-col justify-end gap-6 px-5 pt-8 pb-12 md:min-h-[calc(100dvh-5rem)] md:max-w-[calc(36%-1.5rem)] md:px-8">
+      <p class="font-display text-[clamp(4rem,11vw,10rem)] leading-none text-paper/90">{d.number}</p>
       <h1 class="display text-base md:text-xl" data-split>
         {d.brand}
         <br />
@@ -66,16 +67,31 @@ const posters = await Promise.all(
         )}
 
         {s.layout === "grid" && (
-          <div class="grid items-start gap-[15px] px-5 md:grid-cols-3 md:gap-[1vw] md:px-8">
+          <div class:list={["grid items-start gap-[15px] px-5 md:gap-[1vw] md:px-8", s.images.length % 3 === 2 ? "md:grid-cols-2" : "md:grid-cols-3"]}>
             {s.images.map((im, k) => {
-              // one image left over in a 3-up grid: let the first one span the row instead
-              const wide = k === 0 && s.images.length % 3 === 1;
+              // 3 columns, or 2 when 3 would leave a pair alone; a single leftover image becomes a full-width lead
+              const cols = s.images.length % 3 === 2 ? 2 : 3;
+              const wide = k === 0 && s.images.length % cols === 1;
               return (
-                <div data-reveal class:list={[wide && "md:col-span-3"]}>
-                  <Image src={im.src} alt={im.alt} widths={widths} sizes={wide ? "100vw" : "(min-width: 768px) 32vw, 100vw"} class="w-full" />
+                <div data-reveal class:list={[wide && "md:col-span-full"]}>
+                  <Image src={im.src} alt={im.alt} widths={widths} sizes={wide ? "100vw" : s.images.length % 3 === 2 ? "(min-width: 768px) 49vw, 100vw" : "(min-width: 768px) 32vw, 100vw"} class="w-full" />
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {s.layout === "moodboard" && (
+          <div class="grid gap-[15px] px-5 md:grid-cols-2 md:gap-[3vw] md:px-8">
+            {[s.images.slice(0, Math.ceil(s.images.length / 2)), s.images.slice(Math.ceil(s.images.length / 2))].map((half) => (
+              <div class="grid grid-cols-3 gap-[15px] md:gap-[1vw]">
+                {half.map((im) => (
+                  <div data-reveal>
+                    <Image src={im.src} alt={im.alt} widths={[480, 800, 1200]} sizes="(min-width: 768px) 16vw, 33vw" class="aspect-[2/3] w-full object-cover" />
+                  </div>
+                ))}
+              </div>
+            ))}
           </div>
         )}
 

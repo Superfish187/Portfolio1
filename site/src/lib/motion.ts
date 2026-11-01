@@ -27,7 +27,8 @@ function startLenis() {
   gsap.ticker.lagSmoothing(0);
 }
 
-const onceIn = (el: Element) => ({ trigger: el, start: "top 88%", once: true });
+// 97%: anything already visible at load (e.g. a project summary near the fold) still reveals without scrolling
+const onceIn = (el: Element) => ({ trigger: el, start: "top 97%", once: true });
 
 /** Wires every data-* motion hook on the current page. Re-run after each Astro page swap. */
 function initPage() {

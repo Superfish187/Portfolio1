@@ -24,7 +24,8 @@ const projects = defineCollection({
           body: z.string().optional(),
           // full: stacked wide images · grid: 3-up tiles · strip: pinned horizontal process
           // carousel: one at a time, click/swipe · weather: Monarch mode toggle
-          layout: z.enum(["full", "grid", "strip", "carousel", "weather"]).default("full"),
+          // moodboard: two 3-up blocks side by side, first half of the images left, second half right
+          layout: z.enum(["full", "grid", "strip", "carousel", "weather", "moodboard"]).default("full"),
           images: z.array(pic),
           // Optional video under the images (src is a public/ path)
           video: z.object({ src: z.string(), poster: image() }).optional(),
