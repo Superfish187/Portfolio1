@@ -10,3 +10,6 @@
 # GitHub rejects files over 100 MB. The site uses the compressed copies in site/public/video/
 Bilder/MAN Vyra/Video1.mp4
 Bilder/Geely Skywalker/Skywalker 2.0.mp4
+
+# Blender frame output (2–3 GB per loop); only the encoded videos ship
+blender/render/

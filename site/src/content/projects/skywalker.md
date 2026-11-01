@@ -31,7 +31,7 @@ sections:
       - { src: "../../assets/projects/skywalker/inspo-3.jpg", alt: "Martini glass in a dimly lit bar" }
       - { src: "../../assets/projects/skywalker/inspo-4.jpg", alt: "Art Deco illustration with a winged figure and skyline" }
       - { src: "../../assets/projects/skywalker/inspo-5.jpg", alt: "Art Deco tower with a sweeping staircase" }
-      - { src: "../../assets/projects/skywalker/inspo-6.jpg", alt: "Art Deco poster of a black panther" }
+      - { src: "../../assets/projects/skywalker/inspo-6.jpg", alt: "Art Deco poster of a black panther", focus: "90% 50%" }
   - heading: Cockpit Evolution
     layout: carousel
     images:

@@ -87,7 +87,7 @@ const posters = await Promise.all(
               <div class="grid grid-cols-3 gap-[15px] md:gap-[1vw]">
                 {half.map((im) => (
                   <div data-reveal>
-                    <Image src={im.src} alt={im.alt} widths={[480, 800, 1200]} sizes="(min-width: 768px) 16vw, 33vw" class="aspect-[2/3] w-full object-cover" />
+                    <Image src={im.src} alt={im.alt} widths={[480, 800, 1200]} sizes="(min-width: 768px) 16vw, 33vw" class="aspect-[2/3] w-full object-cover" style={im.focus && `object-position: ${im.focus}`} />
                   </div>
                 ))}
               </div>

@@ -9,8 +9,10 @@ import { contact } from "../lib/site";
 // Two hero finishes rendered from blender/hero.py: matte (default) and mirror (?hero=mirror).
 // Files: public/video/hero-<finish>.mp4 (+ .webm) and src/assets/hero/poster-<finish>.jpg
 // Until the rendered loops are added, only the posters show (no <source>, so no broken requests)
-const hasMp4 = existsSync("public/video/hero-matte.mp4") && existsSync("public/video/hero-mirror.mp4");
-const hasWebm = existsSync("public/video/hero-matte.webm") && existsSync("public/video/hero-mirror.webm");
+const hasMp4 = existsSync("public/video/hero-matte.mp4");
+const hasWebm = existsSync("public/video/hero-matte.webm");
+// The mirror switch only applies once its loop is rendered too
+const hasMirror = existsSync("public/video/hero-mirror.mp4") && existsSync("public/video/hero-mirror.webm");
 const posterMatte = await getImage({ src: posterMatteSrc, width: 1920, format: "webp" });
 const posterMirror = await getImage({ src: posterMirrorSrc, width: 1920, format: "webp" });
 ---
@@ -21,7 +23,7 @@ const posterMirror = await getImage({ src: posterMirrorSrc, width: 1920, format:
       {hasWebm && <source src="/video/hero-matte.webm" type="video/webm" />}
       {hasMp4 && <source src="/video/hero-matte.mp4" type="video/mp4" />}
     </video>
-    <script is:inline define:vars={{ mirrorPoster: posterMirror.src }}>
+    <script is:inline define:vars={{ mirrorPoster: posterMirror.src, hasMirror }}>
       const v = document.getElementById("hero");
       // Reduced motion: keep the poster still instead of the looping video
       if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -29,7 +31,7 @@ const posterMirror = await getImage({ src: posterMirrorSrc, width: 1920, format:
         v.pause();
       }
       // Review switch: ?hero=mirror shows the mirror-chrome loop instead of matte
-      if (new URLSearchParams(location.search).get("hero") === "mirror") {
+      if (hasMirror && new URLSearchParams(location.search).get("hero") === "mirror") {
         v.poster = mirrorPoster;
         v.querySelectorAll("source").forEach((s) => (s.src = s.src.replace("hero-matte", "hero-mirror")));
         v.load();

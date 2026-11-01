@@ -87,7 +87,7 @@ Aim for about 4 MB or less per MP4. Raise `-crf` if a file comes out bigger.
 | `hero-matte.mp4`, `hero-matte.webm`, `hero-mirror.mp4`, `hero-mirror.webm` | `site/public/video/` |
 | `poster-matte.jpg`, `poster-mirror.jpg` | `site/src/assets/hero/` (overwrite) |
 
-The page picks the videos up automatically. Until both MP4 files are present, it shows only the posters.
+The page picks the videos up automatically. Without `hero-matte.mp4` it shows only the poster. `?hero=mirror` only works once both mirror files are present.
 
 ## Check caption contrast
 

@@ -5,7 +5,8 @@ import { z } from "astro/zod";
 const projects = defineCollection({
   loader: glob({ pattern: "*.md", base: "./src/content/projects" }),
   schema: ({ image }) => {
-    const pic = z.object({ src: image(), alt: z.string(), label: z.string().optional() });
+    // focus: CSS object-position for tiles that crop the image (default centre)
+    const pic = z.object({ src: image(), alt: z.string(), label: z.string().optional(), focus: z.string().optional() });
     return z.object({
       number: z.string(),
       title: z.string(),

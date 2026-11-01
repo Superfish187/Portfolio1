@@ -38,7 +38,7 @@ prefs = bpy.context.preferences.addons["cycles"].preferences
 prefs.compute_device_type = "METAL"
 prefs.get_devices()
 for d in prefs.devices:
-    d.use = True
+    d.use = d.type != "CPU"  # GPU only: the CPU as an extra device just slows Metal down
 scene.cycles.device = "GPU"
 FAST = "--fast" in args
 scene.cycles.samples = 64 if FAST else 32 if WEB else 512
@@ -46,6 +46,7 @@ scene.cycles.adaptive_min_samples = 0 if FAST or WEB else 64
 scene.cycles.adaptive_threshold = 0.02 if FAST else 0.03 if WEB else 0.005
 scene.cycles.use_denoising = True
 scene.cycles.denoiser = "OPENIMAGEDENOISE"
+scene.cycles.denoising_use_gpu = True
 scene.cycles.max_bounces = 8
 scene.cycles.glossy_bounces = 8
 scene.cycles.diffuse_bounces = 1
