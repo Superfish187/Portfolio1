@@ -1,0 +1,69 @@
+---
+import Base from "../layouts/Base.astro";
+import { contact } from "../lib/site";
+
+// Web version of public/cv/Julius-Nossoll-Testorf-CV.pdf (November 2026). The phone number stays in the PDF only.
+const pdf = "/cv/Julius-Nossoll-Testorf-CV.pdf";
+const sections = [
+  {
+    title: "Education",
+    items: [
+      { date: "Since 10/2024", title: "Transportation Interior Design", place: "Reutlingen University", notes: ["Currently 3rd year (5th semester)"] },
+      { date: "10/2015 – 08/2023", title: "General university entrance qualification (Abitur)", place: "St. Bernhard-Gymnasium Willich", notes: ["Grade 2.0", "Advanced courses: English, History"] },
+    ],
+  },
+  {
+    title: "Further education",
+    items: [
+      { date: "03/2024 – 07/2024", title: "KATAPULT, introductory course in design", place: "Pforzheim University, summer semester 2024" },
+      { date: "02/2024 – 07/2024", title: "Drawing for Vehicle and Product Design, advanced course", place: "VHS Reutlingen" },
+      { date: "08/2023 – 10/2023", title: "Portfolio preparation course", place: "Akademie Ruhr, Bochum", notes: ["8 weeks, 12 hours per week"] },
+      { date: "07/2020 – 05/2021", title: "English for Business Certificate (EFB)", place: "British Chambers of Commerce, London", notes: ["52 weeks, 2 hours per week"] },
+    ],
+  },
+  {
+    title: "Further knowledge",
+    items: [
+      { date: "Software", title: "Blender 9, Photoshop 8, Vizcom 8, Premiere Pro 7, Alias 6, Illustrator 6", notes: ["Self-rated out of 10", "Also: Autodesk VRED, MS PowerPoint and Word"] },
+      { date: "Strengths", title: "Creative thinking, problem solving, attention to detail, adaptability, sociability, optimism, patience" },
+      { date: "Languages", title: "German native, English C1, French B2, Spanish A2", notes: ["Business English certificate"] },
+      { date: "Interests", title: "Photography, various instruments, sketching, sim racing" },
+      { date: "Other", title: "Driving licence class B" },
+    ],
+  },
+];
+---
+
+<Base title="CV" description="Curriculum vitae of Julius Nossoll Testorf, transportation interior design student.">
+  <h1 class="sr-only">Curriculum Vitae</h1>
+  <div class="px-[15px] pt-16 pb-12 md:px-[1vw] md:pt-20">
+    <p class="intro" data-reveal>
+      <span class="text-paper">Julius Nossoll Testorf,</span> transportation interior design student in the 3rd year at Reutlingen University.
+      Contact: <a href={`mailto:${contact.email}`}>{contact.email}</a> ·{" "}
+      <a href={contact.linkedin} rel="me noopener" target="_blank">LinkedIn</a>
+      <br /><a href={pdf} download>Download CV (PDF)</a>
+    </p>
+
+    <div class="mt-12 space-y-12 md:mt-16">
+      {
+        sections.map((s) => (
+          <section data-reveal aria-labelledby={`cv-${s.title}`}>
+            <h2 id={`cv-${s.title}`} class="display mb-4 text-[0.6rem] text-mute">{s.title}</h2>
+            <dl class="caption grid gap-x-[1vw] gap-y-1 md:gap-y-4 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+              {s.items.map((it) => (
+                <>
+                  <dt class="text-mute">{it.date}</dt>
+                  <dd class="mb-5 md:mb-0">
+                    {it.title}
+                    {it.place && <span class="block text-mute">{it.place}</span>}
+                    {it.notes?.map((n) => <span class="block text-mute">{n}</span>)}
+                  </dd>
+                </>
+              ))}
+            </dl>
+          </section>
+        ))
+      }
+    </div>
+  </div>
+</Base>

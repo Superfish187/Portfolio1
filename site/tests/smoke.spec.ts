@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-const routes = ["/", "/work", "/about", "/work/skywalker", "/work/vyra", "/work/monarch"];
+const routes = ["/", "/work", "/about", "/cv", "/work/skywalker", "/work/vyra", "/work/monarch"];
 const revealed = "[data-reveal], [data-split], [data-wipe]";
 
 for (const path of routes) {
