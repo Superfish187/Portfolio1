@@ -41,11 +41,18 @@ const posterMirror = await getImage({ src: posterMirrorSrc, width: 1920, format:
     <!-- Sizes have px floors so phones (where the caption wraps) stay covered; verified ≥4.5:1 over every frame -->
     <div class="scrim absolute inset-0"><div></div></div>
     <div class="relative flex h-full items-center justify-center px-5 text-center">
-      <h1 class="sr-only">Julius Nossoll Testorf, Transportation Interior Design Portfolio</h1>
-      <p class="text-[15px] font-medium text-paper [text-shadow:0_1px_12px_rgb(0_0_0/0.6)]" data-reveal>
-        <a href="/work">Work</a>, <a href="/about">About</a>, <a href={`mailto:${contact.email}`}>Contact</a>
-        <span class="whitespace-nowrap">© {new Date().getFullYear()} Julius Nossoll Testorf</span>
-      </p>
+      <!-- Visitors missed the plain-text links, so the way in is a row of real buttons with Work as the obvious first step -->
+      <div class="flex flex-col items-center gap-6 [text-shadow:0_1px_12px_rgb(0_0_0/0.6)]" data-reveal>
+        <h1 class="display text-[0.7rem] text-paper">Julius Nossoll Testorf<span class="sr-only">, Transportation Interior Design Portfolio</span></h1>
+        <nav aria-label="Main" class="flex flex-wrap justify-center gap-3">
+          <a href="/work" class="btn btn-primary">Work <span aria-hidden="true">→</span></a>
+          <a href="/about" class="btn">About</a>
+          <a href="/cv" class="btn">CV</a>
+          <a href={`mailto:${contact.email}`} class="btn">Contact</a>
+          <a href={contact.linkedin} rel="me noopener" target="_blank" class="btn">LinkedIn</a>
+        </nav>
+        <p class="text-[12px] text-mute">© {new Date().getFullYear()} Julius Nossoll Testorf</p>
+      </div>
     </div>
   </section>
 </Base>

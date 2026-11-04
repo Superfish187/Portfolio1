@@ -52,6 +52,25 @@ a:hover {
   opacity: 0.6;
 }
 
+/* Inline links must read as links: copper + underline (white-on-grey alone went unnoticed) */
+.intro a,
+.caption a,
+footer a {
+  color: var(--color-copper);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Home page entry buttons */
+.btn {
+  @apply inline-block border border-paper/70 px-5 py-2.5 text-[13px] font-semibold text-paper;
+  background: rgb(0 0 0 / 0.35);
+}
+.btn-primary {
+  @apply border-paper bg-paper text-ink;
+  text-shadow: none;
+}
+
 :focus-visible {
   outline: 1px solid var(--color-paper);
   outline-offset: 4px;
